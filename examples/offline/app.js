@@ -3,9 +3,9 @@ var express = require('express'),
     googleapis = require('googleapis'),
     GooglePlusStrategy = require('passport-google-plus');
     
-var GOOGLE_CLIENT_ID = '185261657788.apps.googleusercontent.com';
-var GOOGLE_CLIENT_SECRET = 'C_X_yxTG1DcmuL6DS6jDM7Ho';
-var GOOGLE_API_KEY = 'AIzaSyBGwmrsuBr2BLq-KeOZRx1qFnvHjq1sy1o';
+var GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID';
+var GOOGLE_CLIENT_SECRET = 'YOUR_CLIENT_SECRET';
+var GOOGLE_API_KEY = 'YOUR_API_KEY';
 
 passport.serializeUser(function(user, done) {
   done(null, user);
