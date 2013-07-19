@@ -1,0 +1,29 @@
+{
+  "name": "passport-google-plus",
+  "description": "Passport strategy for using G+ Sign-In",
+  "version": "0.1.0",
+  "main": "./lib/strategy",
+  "dependencies": {
+    "googleapis": "",
+    "green-jwt": "",
+    "passport" : "0.1.x",
+    "request" : "2.2.x",
+    "xtend" : "2.x"
+  },
+  "devDependencies": {
+    "supertest": "0.7.0",
+    "should": "1.2.x",
+    "mocha": "1.11.0",
+    "request" : "2.2.x",
+    "rewire" : "1.1.x",
+    "timekeeper": ""
+  },
+  "scripts": {
+    "test" : "mocha tests/*"
+  },
+  "keywords": [
+    "google",
+    "g+"
+  ],
+  "license": "Apache 2"
+}
