@@ -13,6 +13,7 @@ GooglePlusStrategy.__set__('KeyManager', function() {
   }  
 });
 
+
 var MockRequest = function(params) {
   this.params = params;
 }
@@ -26,11 +27,13 @@ describe('GooglePlusStrategy', function() {
     timekeeper.reset();
   });
   
-  it('should validate ID tokens', function() {
+  it('should validate ID tokens', function(done) {
     var strategy = new GooglePlusStrategy({
-      clientId: '185261657788.apps.googleusercontent.com'
+      clientId: '185261657788.apps.googleusercontent.com',
+      skipProfile: true
     }, function(tokens, profile, done) {
-      console.log(tokens, profile);
+      should.exist(tokens);
+      should.exist(profile);
       done(null, profile);
     });    
 
@@ -38,13 +41,16 @@ describe('GooglePlusStrategy', function() {
     
     strategy.success = function(user) {
       should.exist(user);
+      done();
     }
     strategy.error = function(err) {
       should.not.exist(err);
+      done(err);
     }
     
-    timekeeper.freeze(new Date(1373665000));
+    timekeeper.freeze(new Date(1373665000000));
     strategy.authenticate(req);    
+
   });
 
 });

@@ -4,11 +4,12 @@
   "version": "0.1.0",
   "main": "./lib/strategy",
   "dependencies": {
-    "googleapis": "",
+    "googleapis": "~0.2.13-alpha",
     "green-jwt": "",
     "passport" : "0.1.x",
     "request" : "2.2.x",
-    "xtend" : "2.x"
+    "xtend" : "2.x",
+    "async" : "0.2.x"
   },
   "devDependencies": {
     "supertest": "0.7.0",

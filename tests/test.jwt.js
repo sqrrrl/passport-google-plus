@@ -12,7 +12,6 @@ describe('Jwt', function() {
     var token = new Jwt(TEST_JWT);
     token.verifySignature(TEST_KEY).should.equal(true);
     token.payload.iss.should.equal('accounts.google.com')
-    console.log(token);
   });
   
   it('should reject invalid keys', function() {
