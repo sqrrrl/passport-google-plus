@@ -1,6 +1,12 @@
 {
   "name": "passport-google-plus",
   "description": "Passport strategy for using G+ Sign-In",
+  "contributors": [
+    {
+      "name": "Steve Bazyl",
+      "email": "sbazyl@google.com"
+    }
+  ],
   "version": "0.1.0",
   "main": "./lib/strategy",
   "dependencies": {
@@ -25,6 +31,7 @@
   "keywords": [
     "google",
     "g+"
+    "passport"
   ],
   "license": "Apache 2"
 }
