@@ -49,7 +49,7 @@ passport.use(new GooglePlusStrategy({
   </span>
 </div>
 <div id="result"></div>
-```js
+```
 
 
 #### Handle the callback & forward the authorization code
@@ -80,7 +80,7 @@ app.get('/auth/google/callback', passport.authenticate('google'), function(req, 
     // Return user back to client
     res.send(req.user);
 });
-```js
+```
 
 ## Usage for [Web Client-Side Flow](https://developers.google.com/+/web/signin/#using_the_client-side_flow)
 
