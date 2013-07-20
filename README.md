@@ -20,45 +20,52 @@ unobtrusively integrated into any application or framework that supports
 The strategy accepts a callback which is called after the user has been authenticated. The
 profile and OAuth credentials can be saved or mapped to a user record.
 
-    var GooglePlusStrategy = require('passport-google-plus');
+```js
+var GooglePlusStrategy = require('passport-google-plus');
 
-    passport.use(new GooglePlusStrategy({
-        clientId: 'YOUR_CLIENT_ID',
-        clientSecret: 'YOUR_CLIENT_SECRET'
-      },
-      function(tokens, profile, done) {
-        // Create or update user, call done() when complete...
-        done(null, profile, tokens);s
-      }
-    ));
+passport.use(new GooglePlusStrategy({
+    clientId: 'YOUR_CLIENT_ID',
+    clientSecret: 'YOUR_CLIENT_SECRET'
+  },
+  function(tokens, profile, done) {
+    // Create or update user, call done() when complete...
+    done(null, profile, tokens);s
+  }
+));
+```
     
 #### Configure Google+ Sign-In Button
 
-    <!-- Add where you want your sign-in button to render -->
-    <div id="signinButton">
-      <span class="g-signin"
-        data-scope="https://www.googleapis.com/auth/plus.login"
-        data-clientid="YOUR_CLIENT_ID"
-        data-redirecturi="postmessage"
-        data-accesstype="offline"
-        data-cookiepolicy="single_host_origin"
-        data-callback="signInCallback">
-      </span>
-    </div>
-    <div id="result"></div>
+```html
+<!-- Add where you want your sign-in button to render -->
+<div id="signinButton">
+  <span class="g-signin"
+    data-scope="https://www.googleapis.com/auth/plus.login"
+    data-clientid="YOUR_CLIENT_ID"
+    data-redirecturi="postmessage"
+    data-accesstype="offline"
+    data-cookiepolicy="single_host_origin"
+    data-callback="signInCallback">
+  </span>
+</div>
+<div id="result"></div>
+```js
+
 
 #### Handle the callback & forward the authorization code
 
-    function signInCallback(authResult) {
-      if (authResult.code) {
-        $.post('/auth/google/callback', { code: authResult.code})
-        .done(function(data) {
-          $('#signinButton').hide();
-        }); 
-      } else if (authResult.error) {
-        console.log('There was an error: ' + authResult.error);
-      }
-    };
+```js
+function signInCallback(authResult) {
+  if (authResult.code) {
+    $.post('/auth/google/callback', { code: authResult.code})
+    .done(function(data) {
+      $('#signinButton').hide();
+    }); 
+  } else if (authResult.error) {
+    console.log('There was an error: ' + authResult.error);
+  }
+};
+```
 
 #### Authenticate Requests
 
@@ -68,10 +75,12 @@ authenticate requests.
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
-    app.get('/auth/google/callback', passport.authenticate('google'), function(req, res) {
-        // Return user back to client
-        res.send(req.user);
-    });
+```js
+app.get('/auth/google/callback', passport.authenticate('google'), function(req, res) {
+    // Return user back to client
+    res.send(req.user);
+});
+```js
 
 ## Usage for [Web Client-Side Flow](https://developers.google.com/+/web/signin/#using_the_client-side_flow)
 
@@ -83,42 +92,48 @@ data is limited to public information.
 The strategy accepts a callback which is called after the user has been authenticated. The
 profile and OAuth credentials can be saved or mapped to a user record.
 
-    var GooglePlusStrategy = require('passport-google-plus');
+```js
+var GooglePlusStrategy = require('passport-google-plus');
 
-    passport.use(new GooglePlusStrategy({
-        clientId: 'YOUR_CLIENT_ID',
-        apiKey: 'YOUR_API_KEY'
-      },
-      function(tokens, profile, done) {
-        // Create or update user, call done() when complete...
-        done(null, profile, tokens);s
-      }
-    ));
-    
+passport.use(new GooglePlusStrategy({
+    clientId: 'YOUR_CLIENT_ID',
+    apiKey: 'YOUR_API_KEY'
+  },
+  function(tokens, profile, done) {
+    // Create or update user, call done() when complete...
+    done(null, profile, tokens);s
+  }
+));
+```
+
 #### Configure Google+ Sign-In Button
 
-    <!-- Add where you want your sign-in button to render -->
-    <div id="signinButton">
-      <span class="g-signin"
-        data-scope="https://www.googleapis.com/auth/plus.login"
-        data-clientid="YOUR_CLIENT_ID"
-        data-redirecturi="postmessage"
-        data-accesstype="online"
-        data-cookiepolicy="single_host_origin"
-        data-callback="signInCallback">
-      </span>
-    </div>
-    <div id="result"></div>
+```html
+<!-- Add where you want your sign-in button to render -->
+<div id="signinButton">
+  <span class="g-signin"
+    data-scope="https://www.googleapis.com/auth/plus.login"
+    data-clientid="YOUR_CLIENT_ID"
+    data-redirecturi="postmessage"
+    data-accesstype="online"
+    data-cookiepolicy="single_host_origin"
+    data-callback="signInCallback">
+  </span>
+</div>
+<div id="result"></div>
+```
 
 #### Handle the callback & forward the identity token
 
-    function signInCallback(authResult) {
-      if (authResult.code) {
-        $.post('/auth/google/callback', { id_token: authResult.id_token})
-        .done(function(data) {
-          $('#signinButton').hide();
-        }); 
-      } else if (authResult.error) {
-        console.log('There was an error: ' + authResult.error);
-      }
-    };
+```js
+function signInCallback(authResult) {
+  if (authResult.code) {
+    $.post('/auth/google/callback', { id_token: authResult.id_token})
+    .done(function(data) {
+      $('#signinButton').hide();
+    }); 
+  } else if (authResult.error) {
+    console.log('There was an error: ' + authResult.error);
+  }
+};
+```
