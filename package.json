@@ -7,10 +7,10 @@
       "email": "sbazyl@google.com"
     }
   ],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "./lib/strategy",
   "dependencies": {
-    "googleapis": "~0.2.13-alpha",
+    "googleapis": "0.4.6",
     "green-jwt": "",
     "passport" : "0.1.x",
     "request" : "2.2.x",
