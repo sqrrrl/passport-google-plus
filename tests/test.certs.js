@@ -59,10 +59,15 @@ describe('KeyManager', function() {
       callback(null, {statusCode: 200, headers: {'cache-control': 'public, max-age=22150, must-revalidate, no-transform'}}, '{"key1": "foo"}');
     });
     
+    var now = Date.now();
     var manager = new KeyManager();    
     manager.fetchKey('key1', function(err, key) {
       should.not.exist(err);
       key.should.equal('foo');
+
+      var expectMinExpiry = now + 22150 * 1000;
+      manager.expiry.should.be.below(expectMinExpiry + 500);
+      manager.expiry.should.not.be.below(expectMinExpiry);
     });
 
     count.should.equal(1);
