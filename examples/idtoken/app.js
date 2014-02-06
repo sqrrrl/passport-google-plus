@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
  var express = require('express'),
-    passport = require('passport'),
-    googleapis = require('googleapis'),
-    GooglePlusStrategy = require('passport-google-plus');
-    
-var GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID';
-var GOOGLE_API_KEY = 'YOUR_API_KEY';
+     passport = require('passport'),
+     googleapis = require('googleapis'),
+     GooglePlusStrategy = require('passport-google-plus');
+
+var GOOGLE_CLIENT_ID = process.env['GOOGLE_CLIENT_ID'];
+var GOOGLE_API_KEY = process.env['GOOGLE_API_KEY'];
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -71,7 +71,7 @@ app.get('/protected', ensureAuthenticated, function(req, res) {
 
 // GET /auth/google/callback
 //   Use passport.authenticate() as route middleware to authenticate the
-//   request.  
+//   request.
 app.all('/auth/google/callback', passport.authenticate('google'), function(req, res) {
   // Return user profile back to client
   res.send(req.user);
@@ -89,7 +89,7 @@ app.listen(5000);
 // resource. Also restores the user's Google oauth token from the session,
 // available as req.authClient
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { 
+  if (req.isAuthenticated()) {
     return next();
   }
   res.redirect('/');

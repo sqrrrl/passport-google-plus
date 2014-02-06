@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
  var express = require('express'),
     passport = require('passport'),
     googleapis = require('googleapis'),
     GooglePlusStrategy = require('passport-google-plus');
-    
-var GOOGLE_CLIENT_ID = 'YOUR_CLIENT_ID';
-var GOOGLE_CLIENT_SECRET = 'YOUR_CLIENT_SECRET';
-var GOOGLE_API_KEY = 'YOUR_API_KEY';
+
+var GOOGLE_CLIENT_ID = process.env['GOOGLE_CLIENT_ID'];
+var GOOGLE_CLIENT_SECRET = process.env['GOOGLE_CLIENT_SECRET'];
+var GOOGLE_API_KEY = process.env['GOOGLE_API_KEY'];
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -74,12 +74,12 @@ app.get('/activities', ensureAuthenticated, function(req, res) {
     .execute(function(err, data) {
       res.render('activities.jade', {activities: JSON.stringify(data, true, "\t")});
     });
-  });  
+  });
 });
 
 // GET /auth/google/callback
 //   Use passport.authenticate() as route middleware to authenticate the
-//   request.  
+//   request.
 app.all('/auth/google/callback', passport.authenticate('google'), function(req, res) {
   req.session.googleCredentials = req.authInfo;
   // Return user profile back to client
@@ -98,7 +98,7 @@ app.listen(5000);
 // resource. Also restores the user's Google oauth token from the session,
 // available as req.authClient
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { 
+  if (req.isAuthenticated()) {
     req.authClient = new googleapis.OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
     req.authClient.credentials = req.session.googleCredentials;
     return next();

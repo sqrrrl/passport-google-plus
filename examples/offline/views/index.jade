@@ -1,4 +1,4 @@
-!!!5
+doctype html
 html(lang="en")
   head
     title Passport Google+ Sign-In Example
@@ -14,10 +14,10 @@ html(lang="en")
                       data-accesstype="offline")
       p
         a(href='/activities') View activities
-      
+
     #profile
       pre
-                
+
     script(type="text/javascript").
       function signInCallback(authResult) {
         if (authResult.code) {
@@ -25,7 +25,7 @@ html(lang="en")
           .done(function(data) {
             $('#signinButton').hide();
             $('#profile > pre').text(JSON.stringify(data, true, "\t"));
-          }); 
+          });
         } else if (authResult.error) {
           console.log('There was an error: ' + authResult.error);
         }
