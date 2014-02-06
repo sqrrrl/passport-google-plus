@@ -7,16 +7,16 @@
       "email": "sbazyl@google.com"
     }
   ],
-  "repository" : { 
-    "type" : "git", 
+  "repository" : {
+    "type" : "git",
     "url" : "https://github.com/sqrrrl/passport-google-plus.git"
   },
-  "version": "0.1.1",
+  "version": "0.2.0",
   "main": "./lib/strategy",
   "dependencies": {
-    "googleapis": "0.4.6",
+    "googleapis": "0.6.x",
     "green-jwt": "",
-    "passport" : "0.1.x",
+    "passport" : "0.2.x",
     "request" : "2.2.x",
     "xtend" : "2.x",
     "async" : "0.2.x"
@@ -25,7 +25,6 @@
     "supertest": "0.7.0",
     "should": "1.2.x",
     "mocha": "1.11.0",
-    "request" : "2.2.x",
     "rewire" : "1.1.x",
     "timekeeper": ""
   },
