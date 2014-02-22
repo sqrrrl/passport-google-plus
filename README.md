@@ -29,7 +29,7 @@ passport.use(new GooglePlusStrategy({
   },
   function(tokens, profile, done) {
     // Create or update user, call done() when complete...
-    done(null, profile, tokens);s
+    done(null, profile, tokens);
   }
 ));
 ```
@@ -101,7 +101,7 @@ passport.use(new GooglePlusStrategy({
   },
   function(tokens, profile, done) {
     // Create or update user, call done() when complete...
-    done(null, profile, tokens);s
+    done(null, profile, tokens);
   }
 ));
 ```
