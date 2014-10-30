@@ -23,7 +23,7 @@ var setRequestMock = function(handler) {
   KeyManager.__set__('request', {
     get: handler
   });
-}
+};
 
 describe('KeyManager', function() {  
 

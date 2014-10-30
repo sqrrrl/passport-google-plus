@@ -27,16 +27,17 @@ var TEST_KEY = '-----BEGIN CERTIFICATE-----\nMIICITCCAYqgAwIBAgIIajvKwhmOuSgwDQY
 GooglePlusStrategy.__set__('KeyManager', function() {
   this.fetchKey = function(keyId, callback) {
     callback(null, TEST_KEY);
-  }
+  };
 });
 
 
 var MockRequest = function(params) {
   this.params = params;
-}
+};
+
 MockRequest.prototype.param = function(key) {
   return this.params[key];
-}
+};
 
 describe('GooglePlusStrategy', function() {
 
@@ -59,11 +60,12 @@ describe('GooglePlusStrategy', function() {
     strategy.success = function(user) {
       should.exist(user);
       done();
-    }
+    };
+    
     strategy.error = function(err) {
       should.not.exist(err);
       done(err);
-    }
+    };
 
     timekeeper.freeze(new Date(1373665000000));
     strategy.authenticate(req);
@@ -84,11 +86,12 @@ describe('GooglePlusStrategy', function() {
 
     strategy.success = function(user) {
       done("Authentication should have failed.");
-    }
+    };
+    
     strategy.error = function(err) {
       should.exist(err);
       done();
-    }
+    };
 
     timekeeper.freeze(new Date(1373665000000));
     strategy.authenticate(req);

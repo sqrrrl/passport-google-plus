@@ -28,7 +28,7 @@ describe('Jwt', function() {
   it('should correctly decode JWT', function() {
     var token = new Jwt(TEST_JWT);
     token.verifySignature(TEST_KEY).should.equal(true);
-    token.payload.iss.should.equal('accounts.google.com')
+    token.payload.iss.should.equal('accounts.google.com');
   });
 
   it('should reject invalid keys', function() {
@@ -43,6 +43,6 @@ describe('Jwt', function() {
 
   it('should throw on corrupt JWTs', function() {
     (function() { new Jwt(CORRUPT_JWT); }).should.throw();
-  })
+  });
 
 });
