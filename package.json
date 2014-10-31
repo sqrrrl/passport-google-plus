@@ -11,15 +11,15 @@
     "type" : "git",
     "url" : "https://github.com/sqrrrl/passport-google-plus.git"
   },
-  "version": "0.2.0",
+  "version": "0.3.0",
   "main": "./lib/strategy",
   "dependencies": {
-    "googleapis": "0.6.x",
-    "green-jwt": "",
-    "passport" : "0.2.x",
-    "request" : "2.2.x",
-    "xtend" : "2.x",
-    "async" : "0.2.x"
+    "googleapis": "~1.0.0",
+    "green-jwt": "^0.0.8-alpha",
+    "passport" : "^0.2.x",
+    "request" : "^2.2.x",
+    "xtend" : "^2.x",
+    "async" : "^0.2.x"
   },
   "devDependencies": {
     "supertest": "0.7.0",
