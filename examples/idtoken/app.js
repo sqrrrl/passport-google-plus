@@ -75,7 +75,6 @@ app.get('/protected', ensureAuthenticated, function(req, res) {
 //   request.
 app.all('/auth/google/callback', passport.authenticate('google'), function(req, res) {
   // Return user profile back to client
-  util.debug(util.format("U=%j", req.user));
   res.send(req.user);
 });
 
