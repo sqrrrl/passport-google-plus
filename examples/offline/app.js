@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
- var express = require('express'),
+var express = require('express'),
+    util = require('util'),
     passport = require('passport'),
+    logger = require('morgan'),
+    bodyParser = require('body-parser'),
+    session = require('express-session'),
     googleapis = require('googleapis'),
     GooglePlusStrategy = require('passport-google-plus');
 
@@ -30,7 +34,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
-
 
 passport.use(new GooglePlusStrategy({
     clientId: GOOGLE_CLIENT_ID,
@@ -47,33 +50,26 @@ passport.use(new GooglePlusStrategy({
 
 var app = express();
 
-// configure Express
-app.configure(function() {
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.logger());
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.session({ secret: 'notasecret' }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
-
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.use(logger('dev'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: 'notasecret' }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
   res.render('index.jade', { client_id: GOOGLE_CLIENT_ID });
 });
 
 app.get('/activities', ensureAuthenticated, function(req, res) {
-  googleapis.discover('plus', 'v1').execute(function(err, client) {
-    client.plus.activities.list({ userId: 'me', collection: 'public' })
-    .withAuthClient(req.authClient)
-    .execute(function(err, data) {
-      res.render('activities.jade', {activities: JSON.stringify(data, true, "\t")});
-    });
+  var plus = googleapis.plus('v1');
+  plus.activities.list({ userId: 'me', collection: 'public', auth: req.authClient }, function(err, data) {
+    res.render('activities.jade', {activities: JSON.stringify(data, true, "\t")});
   });
 });
 
@@ -99,7 +95,7 @@ app.listen(5000);
 // available as req.authClient
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    req.authClient = new googleapis.OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
+    req.authClient = new googleapis.auth.OAuth2(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET);
     req.authClient.credentials = req.session.googleCredentials;
     return next();
   }

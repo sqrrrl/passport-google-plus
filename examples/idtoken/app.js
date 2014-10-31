@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
- var express = require('express'),
-     passport = require('passport'),
-     googleapis = require('googleapis'),
-     GooglePlusStrategy = require('passport-google-plus');
+var express = require('express'),
+    util = require('util'),
+    passport = require('passport'),
+    logger = require('morgan'),
+    bodyParser = require('body-parser'),
+    session = require('express-session'),
+    googleapis = require('googleapis'),
+    GooglePlusStrategy = require('passport-google-plus');
 
 var GOOGLE_CLIENT_ID = process.env['GOOGLE_CLIENT_ID'];
 var GOOGLE_API_KEY = process.env['GOOGLE_API_KEY'];
@@ -45,20 +49,17 @@ passport.use(new GooglePlusStrategy({
 
 var app = express();
 
-// configure Express
-app.configure(function() {
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.logger());
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.session({ secret: 'notasecret' }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
+app.use(logger('dev'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: 'notasecret' }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.static(__dirname + '/public'));
 
 
 app.get('/', function(req, res){
@@ -74,6 +75,7 @@ app.get('/protected', ensureAuthenticated, function(req, res) {
 //   request.
 app.all('/auth/google/callback', passport.authenticate('google'), function(req, res) {
   // Return user profile back to client
+  util.debug(util.format("U=%j", req.user));
   res.send(req.user);
 });
 
@@ -86,8 +88,7 @@ app.listen(5000);
 
 
 // Simple route middleware to ensure user is authenticated, use on any protected
-// resource. Also restores the user's Google oauth token from the session,
-// available as req.authClient
+// resource.
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
