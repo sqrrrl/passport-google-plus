@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- var Jwt = require('../lib/jwt'),
+var Jwt = require('../lib/jwt'),
     should = require('should');
 
 
@@ -25,6 +25,7 @@ var TEST_KEY = '-----BEGIN CERTIFICATE-----\nMIICITCCAYqgAwIBAgIIajvKwhmOuSgwDQY
 var INVALID_KEY = '-----BEGIN CERTIFICATE-----\nMIICITCCAYqgAwIBAgIIFRGJPCKmQX4wDQYJKoZIhvcNAQEFBQAwNjE0MDIGA1UE\nAxMrZmVkZXJhdGVkLXNpZ25vbi5zeXN0ZW0uZ3NlcnZpY2VhY2NvdW50LmNvbTAe\nFw0xMzA3MTExOTEzMzRaFw0xMzA3MTMwODEzMzRaMDYxNDAyBgNVBAMTK2ZlZGVy\nYXRlZC1zaWdub24uc3lzdGVtLmdzZXJ2aWNlYWNjb3VudC5jb20wgZ8wDQYJKoZI\nhvcNAQEBBQADgY0AMIGJAoGBANMMLqs+zDWsfBFkvVbXIZat+/DHQUdMOu/2o3Ds\nK3FI4Wca3qamR4egFGdTbkJeSjcRmNmWh64ifPieJJnPBkmlT4or09o8FXIg5Nps\n8f9H8mHsfRKZceTR6OqWI3KML5vLbIBQUcWrc0jI3piZUJifGTTAENzEJPEiGljp\nu8A1AgMBAAGjODA2MAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMBYGA1Ud\nJQEB/wQMMAoGCCsGAQUFBwMCMA0GCSqGSIb3DQEBBQUAA4GBAHoSShq3XjJ6llnl\nyLj6MsuFCYDfU4/YVJCI8PV28MZJh4upW58gBmc30vidPwLU8qvT7qBYUb6kNmMO\nnFh0BklfVWn+8PuQYIqaV/yWF/SpvDV4GZTukDHNWOIbAEt8HRebM1p5LmO0lcwy\nP9jjXY2ROaROHTlOSzNfJ6DWC9EW\n-----END CERTIFICATE-----\n';
 
 describe('Jwt', function() {
+
   it('should correctly decode JWT', function() {
     var token = new Jwt(TEST_JWT);
     token.verifySignature(TEST_KEY).should.equal(true);
