@@ -16,7 +16,8 @@
 
 var rewire = require('rewire'),
     should = require('should'),
-    timekeeper = require('timekeeper');
+    nock = require('nock'),
+    sinon = require('sinon');
 
 var GooglePlusStrategy = rewire('../lib/strategy');
 
@@ -41,60 +42,112 @@ MockRequest.prototype.param = function(key) {
 
 describe('GooglePlusStrategy', function() {
 
+  beforeEach(function() {
+    this.clock = sinon.useFakeTimers(1373665000000, "Date");
+    this.strategy = new GooglePlusStrategy({
+      clientId: '185261657788.apps.googleusercontent.com',
+    }, function(tokens, profile, done) {
+      done(null, profile);
+    });
+  });
+
   afterEach(function() {
-    timekeeper.reset();
+    this.clock.restore();
+    nock.cleanAll();
   });
 
   it('should validate ID tokens', function(done) {
-    var strategy = new GooglePlusStrategy({
-      clientId: '185261657788.apps.googleusercontent.com',
-      skipProfile: true
-    }, function(tokens, profile, done) {
-      should.exist(tokens);
-      should.exist(profile);
-      done(null, profile);
-    });
-
     var req = new MockRequest({id_token: TEST_JWT});
-
-    strategy.success = function(user) {
+    this.strategy.success = function(user) {
       should.exist(user);
       done();
     };
-    
-    strategy.error = function(err) {
-      should.not.exist(err);
-      done(err);
-    };
-
-    timekeeper.freeze(new Date(1373665000000));
-    strategy.authenticate(req);
-
+    this.strategy.error = done;
+    this.strategy.authenticate(req, {skipProfile: true});
   });
 
   it('should handle corrupt ID tokens', function(done) {
-    var strategy = new GooglePlusStrategy({
-      clientId: '185261657788.apps.googleusercontent.com',
-      skipProfile: true
-    }, function(tokens, profile, done) {
-      should.exist(tokens);
-      should.exist(profile);
-      done(null, profile);
-    });
-
     var req = new MockRequest({id_token: CORRUPT_JWT});
-
-    strategy.success = function(user) {
-      done("Authentication should have failed.");
+    this.strategy.success = function(user) {
+      done(new Error("Authentication should have failed."));
     };
-    
-    strategy.error = function(err) {
+    this.strategy.error = function(err) {
       should.exist(err);
       done();
     };
+    this.strategy.authenticate(req, {skipProfile: true});
+  });
 
-    timekeeper.freeze(new Date(1373665000000));
-    strategy.authenticate(req);
+  it('should fetch basic profile with access token', function(done) {
+    var google = nock('https://www.googleapis.com')
+      .post('/oauth2/v2/tokeninfo?access_token=ya.12345')
+      .reply(200, JSON.stringify({
+        "issued_to": "185261657788.apps.googleusercontent.com",
+        "audience": "185261657788.apps.googleusercontent.com",
+        "user_id": "103354693083460731603",
+        "scope": "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.moments.write https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/plus.profile.agerange.read https://www.googleapis.com/auth/plus.profile.language.read https://www.googleapis.com/auth/plus.circles.members.read",
+        "expires_in": 3588,
+        "access_type": "online"
+      }))
+      .get('/plus/v1/people/103354693083460731603')
+      .reply(200, JSON.stringify({
+        "name" : {
+          "familyName" : "Bazyl",
+          "givenName" : "Steven"
+        }
+      }));
+
+    var req = new MockRequest({access_token: "ya.12345"});
+    this.strategy.success = function(user) {
+      should.exist(user);
+      user.name.givenName.should.equal("Steven");
+      done();
+    };
+    this.strategy.error = done;
+    this.strategy.authenticate(req);
+  });
+
+  it('should reject access tokens with an invalid audience', function(done) {
+    var google = nock('https://www.googleapis.com')
+      .post('/oauth2/v2/tokeninfo?access_token=ya.12345')
+      .reply(200, JSON.stringify({
+        "issued_to": "185261657788.apps.googleusercontent.com",
+        "audience": "285261657788.apps.googleusercontent.com",
+        "user_id": "103354693083460731603",
+        "scope": "https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/plus.moments.write https://www.googleapis.com/auth/plus.me https://www.googleapis.com/auth/plus.profile.agerange.read https://www.googleapis.com/auth/plus.profile.language.read https://www.googleapis.com/auth/plus.circles.members.read",
+        "expires_in": 3588,
+        "access_type": "online"
+      }));
+
+    var req = new MockRequest({access_token: "ya.12345"});
+    this.strategy.success = function(user) {
+      done(new Error("Authentication should have failed."));
+    };
+    this.strategy.error = function(err) {
+      should.exist(err);
+      done();
+    };
+    this.strategy.authenticate(req);
+  });
+
+  it('should reject id tokens with an invalid audience', function(done) {
+    this.strategy = new GooglePlusStrategy({
+      clientId: '285261657788.apps.googleusercontent.com',
+    }, function(tokens, profile, done) {
+      done(null, profile);
+    });
+
+    this.strategy.success = function(user) {
+      done(new Error("Authentication should have failed."));
+    };
+    this.strategy.error = function(err) {
+      should.exist(err);
+      err.message.should.equal("Invalid audience");
+      done();
+    };
+
+    var req = new MockRequest({id_token: TEST_JWT});
+    this.strategy.authenticate(req, {skipProfile: true});
 
   });
 

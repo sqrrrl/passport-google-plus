@@ -22,11 +22,11 @@
     "async" : "^0.2.x"
   },
   "devDependencies": {
-    "supertest": "0.7.0",
-    "should": "1.2.x",
-    "mocha": "1.11.0",
-    "rewire" : "1.1.x",
-    "timekeeper": ""
+    "should": "^4.3",
+    "mocha": "^2.0",
+    "rewire" : "^2.1",
+    "sinon" : "^1.12",
+    "nock": "^0.50"
   },
   "scripts": {
     "test" : "mocha tests/*"

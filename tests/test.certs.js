@@ -14,50 +14,44 @@
  * limitations under the License.
  */
 
-var rewire = require('rewire'),
+var nock = require('nock'),
     should = require('should');
 
-var KeyManager = rewire('../lib/certs');
-
-var setRequestMock = function(handler) {
-  KeyManager.__set__('request', {
-    get: handler
-  });
-};
+var KeyManager = require('../lib/certs');
 
 describe('KeyManager', function() {
 
-  it('should fetch certificates', function() {
-    setRequestMock(function(url, callback) {
-      url.should.equal('https://www.googleapis.com/oauth2/v1/certs');
-      callback(null, {statusCode: 200, headers: {}}, '{"key1": "foo"}');
-    });
+  afterEach(function() {
+    nock.cleanAll();
+  });
 
+  it('should fetch certificates', function(done) {
+    var google = nock('https://www.googleapis.com')
+      .get('/oauth2/v1/certs')
+      .reply(200, '{"key1": "foo"}');
     var manager = new KeyManager();
     manager.fetchKey('key1', function(err, key) {
       should.not.exist(err);
       key.should.equal('foo');
+      done();
     });
   });
 
-  it('should callback with error', function() {
-    setRequestMock(function(url, callback) {
-      url.should.equal('https://www.googleapis.com/oauth2/v1/certs');
-      callback("Internal Error", {statusCode: 500, headers: {}}, '');
-    });
-
+  it('should callback with error', function(done) {
+    var google = nock('https://www.googleapis.com')
+      .get('/oauth2/v1/certs')
+      .reply(500, '');
     var manager = new KeyManager();
     manager.fetchKey('key1', function(err, key) {
       should.exist(err);
+      done();
     });
   });
 
-  it('should honor cache control header', function() {
-    var count = 0;
-    setRequestMock(function(url, callback) {
-      count++;
-      callback(null, {statusCode: 200, headers: {'cache-control': 'public, max-age=22150, must-revalidate, no-transform'}}, '{"key1": "foo"}');
-    });
+  it('should honor cache control header', function(done) {
+    var google = nock('https://www.googleapis.com')
+      .get('/oauth2/v1/certs')
+      .reply(200, '{"key1": "foo"}', {'cache-control': 'public, max-age=22150, must-revalidate, no-transform'});
 
     var now = Date.now();
     var manager = new KeyManager();
@@ -65,18 +59,10 @@ describe('KeyManager', function() {
       should.not.exist(err);
       key.should.equal('foo');
 
-      var expectMinExpiry = now + 22150 * 1000;
-      manager.expiry.should.be.below(expectMinExpiry + 500);
-      manager.expiry.should.not.be.below(expectMinExpiry);
+      manager.fetchKey('key2', function(err, key) {
+        err.message.should.equal("Key not found");
+        done();
+      });
     });
-
-    count.should.equal(1);
-
-    manager.fetchKey('key2', function(err, key) {
-      should.exist(err);
-    });
-
-    count.should.equal(1);
   });
-
 });
