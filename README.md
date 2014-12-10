@@ -76,7 +76,7 @@ For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
 ```js
-app.get('/auth/google/callback', passport.authenticate('google'), function(req, res) {
+app.post('/auth/google/callback', passport.authenticate('google'), function(req, res) {
     // Return user back to client
     res.send(req.user);
 });
