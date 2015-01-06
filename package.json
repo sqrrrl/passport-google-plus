@@ -19,7 +19,7 @@
     "passport" : "^0.2.x",
     "request" : "^2.2.x",
     "xtend" : "^2.x",
-    "async" : "^0.2.x"
+    "async" : "^0.9.x"
   },
   "devDependencies": {
     "should": "^4.3",
