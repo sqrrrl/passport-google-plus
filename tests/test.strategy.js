@@ -151,4 +151,28 @@ describe('GooglePlusStrategy', function() {
 
   });
 
+  it('should pass the request to the callback when enabled', function(done) {
+    this.strategy = new GooglePlusStrategy({
+      clientId: '185261657788.apps.googleusercontent.com',
+      passReqToCallback: true
+    }, function(req, tokens, profile, done) {
+      if(req instanceof MockRequest) {
+        done(null, profile);
+      } else {
+        done = done || profile; // Args shifted
+        done(new Error("first arg was not a request"));
+      }
+    });
+
+    this.strategy.success = function(user) {
+      done();
+    };
+    this.strategy.error = function(err) {
+      done(err);
+    };
+
+    var req = new MockRequest({id_token: TEST_JWT});
+    this.strategy.authenticate(req, {skipProfile: true});
+
+  });
 });
