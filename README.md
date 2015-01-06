@@ -15,6 +15,10 @@ unobtrusively integrated into any application or framework that supports
 
 ## Usage for [Web Server-Side Flow](https://developers.google.com/+/web/signin/server-side-flow)
 
+### Important note
+
+In the [Google Developers Console](https://console.developers.google.com/) make sure you have enabled the Google Plus API, otherwise your calls will fail (seen in [this issue](https://github.com/jaredhanson/passport-google-oauth/pull/45#issuecomment-52711960)).
+
 #### Configure Strategy
 
 The strategy accepts a callback which is called after the user has been authenticated. The
@@ -76,7 +80,7 @@ For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
 ```js
-app.get('/auth/google/callback', passport.authenticate('google'), function(req, res) {
+app.post('/auth/google/callback', passport.authenticate('google'), function(req, res) {
     // Return user back to client
     res.send(req.user);
 });
